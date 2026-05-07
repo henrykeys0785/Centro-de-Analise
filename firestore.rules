@@ -21,11 +21,13 @@ service cloud.firestore {
     // Article Rules
     match /articles/{articleId} {
       function isValidArticle(data) {
-        return data.title is string && data.title.size() <= 500
-          && data.content is string && data.content.size() <= 50000
-          && data.category is string && data.category.size() <= 200
+        return data.title is string && data.title.size() <= 2000
+          && data.content is string && data.content.size() <= 100000
+          && data.category is string && data.category.size() <= 500
           && data.sentiment in ['Positivo', 'Negativo']
-          && data.status in ['pending', 'classified', 'rejected'];
+          && data.status in ['pending', 'classified', 'rejected']
+          && data.authorId is string
+          && data.createdAt is number;
       }
 
       allow list: if true;
