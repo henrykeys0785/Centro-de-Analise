@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { 
   BarChart3, 
   History, 
-  BrainCircuit, 
   Settings, 
   LogOut, 
   LayoutDashboard,
@@ -11,6 +10,7 @@ import {
   Bell,
   Trash2,
   CheckCircle2,
+  ShieldCheck,
   AlertCircle,
   TrendingUp,
   TrendingDown,
@@ -59,7 +59,7 @@ import {
   setDoc,
   getDoc
 } from 'firebase/firestore';
-import { classifyArticle } from './services/gemini';
+import { ruleBasedClassifier } from './services/classifier';
 import { Article, Sentiment } from './types';
 import { CATEGORIES } from './constants';
 import { cn } from './lib/utils';
@@ -196,32 +196,32 @@ const Dashboard = ({ articles }: { articles: Article[] }) => {
       {/* KPIs Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard title="Total Analisado" value={stats.total} change={12} icon={BarChart3} color="bg-zinc-900" />
-        <StatCard title="Acurácia da IA" value={`${stats.accuracy}%`} change={0.5} icon={BrainCircuit} color="bg-indigo-600" />
+        <StatCard title="Conformidade Manual" value={`${stats.accuracy}%`} change={0.5} icon={CheckCircle2} color="bg-emerald-600" />
         <StatCard title="Última Atualização" value={stats.lastFeed} icon={History} color="bg-amber-500" />
-        <StatCard title="Saúde do Sistema" value="Ótima" icon={CheckCircle2} color="bg-emerald-500" />
+        <StatCard title="Saúde do Sistema" value="Ótima" icon={ShieldCheck} color="bg-emerald-500" />
       </div>
 
-      {/* Real-time Training Progress Bar */}
-      <Card title="Desempenho de Treinamento em Tempo Real">
+      {/* Manual Application Progress Bar */}
+      <Card title="Acurácia da Classificação Logística">
         <div className="space-y-4">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-              <span className="font-bold text-zinc-900">Processamento Ativo</span>
+              <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+              <span className="font-bold text-zinc-900">Processamento Operacional</span>
             </div>
-            <span className="text-zinc-500">Capacidade: {stats.total}/100+ matérias</span>
+            <span className="text-zinc-500">Capacidade: {stats.total}/∞ matérias</span>
           </div>
           <div className="relative h-6 bg-zinc-100 rounded-full overflow-hidden border border-zinc-200">
             <motion.div 
               initial={{ width: 0 }}
-              animate={{ width: `${stats.trainingProgress}%` }}
-              className="absolute h-full bg-gradient-to-r from-indigo-500 to-indigo-600 flex items-center justify-end px-3"
+              animate={{ width: `100%` }}
+              className="absolute h-full bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-end px-3"
             >
-              <span className="text-[10px] font-black text-white">{stats.trainingProgress.toFixed(1)}%</span>
+              <span className="text-[10px] font-black text-white">100% OPERACIONAL</span>
             </motion.div>
           </div>
           <p className="text-[10px] text-zinc-400 text-center uppercase tracking-widest font-bold">
-            Status: {stats.trainingProgress >= 100 ? 'IA Treinada com Sucesso' : 'Treinando Modelos com Dados Recentes...'}
+            Status: Regras do Manual Aplicadas com Sucesso
           </p>
         </div>
       </Card>
@@ -297,7 +297,7 @@ const Dashboard = ({ articles }: { articles: Article[] }) => {
   );
 };
 
-const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
+const ClassificationCenter = ({ user }: { user: FirebaseUser }) => {
   const [inputTitle, setInputTitle] = useState('');
   const [inputContent, setInputContent] = useState('');
   const [inputUrl, setInputUrl] = useState('');
@@ -346,7 +346,7 @@ const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
     }, 300);
 
     try {
-      const result = await classifyArticle(inputTitle, inputContent, inputUrl);
+      const result = ruleBasedClassifier(inputTitle, inputContent, inputUrl);
       clearInterval(interval);
       setProgress(100);
       
@@ -471,7 +471,7 @@ const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
               </div>
               <div className="mt-8 p-4 bg-zinc-900 rounded-2xl flex items-start gap-4">
                  <div className="bg-zinc-800 p-2 rounded-lg text-emerald-400">
-                   <BrainCircuit size={20} />
+                   <BookOpen size={20} />
                  </div>
                  <div>
                    <h4 className="text-white font-bold text-sm">Passo a Passo de Rotina (O Dia)</h4>
@@ -544,12 +544,12 @@ const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
               {isClassifying ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Treinando IA...
+                  Processando...
                 </>
               ) : (
                 <>
-                  <BrainCircuit size={18} />
-                  Analisar e Treinar
+                  <CheckCircle2 size={18} />
+                  Classificar via Manual
                 </>
               )}
             </Button>
@@ -564,7 +564,7 @@ const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
           {isClassifying && (
             <div className="mt-4">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-medium text-zinc-600">Progresso do Treinamento</span>
+                <span className="text-xs font-medium text-zinc-600">Lendo Matéria e Cruzando Dados</span>
                 <span className="text-xs font-bold text-zinc-900">{Math.round(progress)}%</span>
               </div>
               <div className="w-full h-2 bg-zinc-100 rounded-full overflow-hidden">
@@ -579,7 +579,7 @@ const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
         </div>
       </Card>
 
-      <Card title="Resultado da Classificação IA">
+      <Card title="Resultado da Classificação (Regras Vale)">
         <AnimatePresence mode="wait">
           {lastResult ? (
             <motion.div 
@@ -630,16 +630,16 @@ const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
               </div>
 
               <div>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-1">Explicação da IA</span>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-1">Explicação do Sistema</span>
                 <p className="text-zinc-600 text-sm italic leading-relaxed">"{lastResult.explanation}"</p>
               </div>
 
               <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
                  <div className="flex items-center gap-2 text-indigo-700 mb-2">
-                   <BrainCircuit size={16} />
-                   <span className="font-bold text-xs uppercase tracking-wider">Impacto no Treinamento</span>
+                   <BookOpen size={16} />
+                   <span className="font-bold text-xs uppercase tracking-wider">Lógica do Manual</span>
                  </div>
-                 <p className="text-sm text-indigo-900/70">A IA aprendeu com esta classificação para melhorar futuras previsões em tempo real.</p>
+                 <p className="text-sm text-indigo-900/70">A matéria foi lida e processada com base nas palavras-chave e categorias oficiais do manual.</p>
               </div>
             </motion.div>
           ) : (
@@ -844,9 +844,9 @@ export default function App() {
         <div className="p-8">
           <div className="flex items-center gap-3 mb-10">
             <div className="bg-zinc-900 p-2 rounded-lg text-white">
-              <BrainCircuit size={24} />
+              <BookOpen size={24} />
             </div>
-            <h2 className="font-extrabold text-zinc-900 tracking-tight">AI INSIGHT HUB</h2>
+            <h2 className="font-extrabold text-zinc-900 tracking-tight uppercase">VALE INSIGHT HUB</h2>
           </div>
           
           <nav className="space-y-1.5 font-sans">
@@ -859,9 +859,9 @@ export default function App() {
             <NavItem 
               active={activeTab === 'training'} 
               onClick={() => setActiveTab('training')} 
-              icon={BrainCircuit}
+              icon={CheckCircle2}
               label="Nova Análise"
-              badge="IA"
+              badge="REGRAS"
             />
             <NavItem 
               active={activeTab === 'history'} 
@@ -870,7 +870,7 @@ export default function App() {
               label="Histórico Geral"
             />
             <div className="pt-4 pb-2 px-4">
-              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-3">Notificações Push</p>
+              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-3">Alertas Operacionais</p>
               <div className="space-y-3">
                 <label className="flex items-center justify-between cursor-pointer">
                   <span className="text-xs font-semibold text-zinc-600">Novas Análises</span>
@@ -913,12 +913,12 @@ export default function App() {
         <header className="h-20 bg-white border-b border-zinc-200 flex items-center justify-between px-4 sm:px-8 shrink-0">
            <div className="flex items-center gap-4">
              <div className="lg:hidden bg-zinc-900 p-2 rounded-lg text-white">
-               <BrainCircuit size={20} />
+               <BookOpen size={20} />
              </div>
              <div>
                <h1 className="text-lg font-bold text-zinc-900 leading-tight">
                  {activeTab === 'dashboard' ? 'Overview Estratégico' : 
-                  activeTab === 'training' ? 'Centro de Análise & IA' : 'Histórico Consolidado'}
+                  activeTab === 'training' ? 'Classificação via Manual' : 'Histórico Consolidado'}
                </h1>
                <p className="text-xs text-zinc-500 font-medium">Bem-vindo, {user.displayName?.split(' ')[0]}</p>
              </div>
@@ -928,7 +928,7 @@ export default function App() {
              {activeTab !== 'training' && (
                <Button 
                 onClick={() => setActiveTab('training')}
-                className="h-10 px-3 sm:px-4 text-xs sm:text-sm bg-indigo-600 hover:bg-indigo-700"
+                className="h-10 px-3 sm:px-4 text-xs sm:text-sm bg-zinc-900 hover:bg-zinc-800"
                >
                  <PlusCircle size={16} />
                  <span className="hidden sm:inline">Nova Análise</span>
@@ -937,14 +937,11 @@ export default function App() {
              
              <div className="h-8 w-px bg-zinc-200 mx-1 hidden sm:block" />
              <div className="text-right hidden md:block">
-               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Status da IA</p>
+               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Status do Sistema</p>
                <div className="flex items-center gap-1.5 justify-end">
-                 <div className={cn(
-                   "w-1.5 h-1.5 rounded-full animate-pulse",
-                   articles.length >= 100 ? "bg-indigo-500" : "bg-emerald-500"
-                 )} />
+                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                  <span className="text-xs font-bold text-zinc-900 leading-none">
-                   {articles.length >= 100 ? 'Modelo Otimizado' : 'Treinada'}
+                   Monitoramento Ativo
                  </span>
                </div>
              </div>
@@ -962,7 +959,7 @@ export default function App() {
                 transition={{ duration: 0.2 }}
               >
                 {activeTab === 'dashboard' && <Dashboard articles={articles} />}
-                {activeTab === 'training' && <TrainingCenter user={user} />}
+                {activeTab === 'training' && <ClassificationCenter user={user} />}
                 {activeTab === 'history' && <HistoryHub articles={articles} />}
               </motion.div>
             </AnimatePresence>
@@ -1005,8 +1002,8 @@ export default function App() {
               <CheckCircle2 size={20} />
             </div>
             <div>
-              <p className="text-sm font-bold">Nova Matéria Treinada</p>
-              <p className="text-xs text-zinc-400">O banco foi atualizado com sucesso.</p>
+              <p className="text-sm font-bold">Nova Matéria Classificada</p>
+              <p className="text-xs text-zinc-400">O histórico foi atualizado conforme o manual.</p>
             </div>
           </motion.div>
         )}

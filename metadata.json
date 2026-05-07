@@ -1,6 +1,6 @@
 {
-  "name": "Vale AI Insight Hub",
-  "description": "Sistema avançado de monitoramento e classificação de notícias da Vale com IA, dashboard nível Power BI e análise de sentimento.",
+  "name": "Vale Hub Monitor",
+  "description": "Sistema de monitoramento e classificação de notícias da Vale com manual de regras oficial, dashboard Power BI e análise de sentimento binária.",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }
