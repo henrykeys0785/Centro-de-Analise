@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System user with role-based access",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Article": {
+      "title": "Article",
+      "description": "Classified news article",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "category": { "type": "string" },
+        "sentiment": { "type": "string", "enum": ["Positivo", "Negativo"] },
+        "createdAt": { "type": "number" },
+        "authorId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "classified", "rejected"] }
+      },
+      "required": ["title", "content", "category", "sentiment", "createdAt", "authorId", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/articles/{articleId}": {
+      "schema": "Article",
+      "description": "News articles database"
+    }
+  }
+}

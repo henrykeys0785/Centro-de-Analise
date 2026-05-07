@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Common Helpers
+    function isSignedIn() { return request.auth != null; }
+    function isEmailVerified() { return request.auth.token.email_verified == true; }
+    function isAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // User Profile Rules
+    match /users/{userId} {
+      function isValidUser(data) {
+        return data.uid == request.auth.uid 
+          && data.email is string && data.email.size() <= 200
+          && data.role in ['admin', 'user']
+          && data.createdAt is number;
+      }
+      
+      allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow create: if isSignedIn() && isOwner(userId) && isValidUser(incoming()) && incoming().role == 'user'; // Users can only create as 'user'
+      allow update: if isSignedIn() && (
+        (isOwner(userId) && incoming().diff(existing()).affectedKeys().hasOnly(['displayName']) && incoming().displayName is string)
+        || (isAdmin() && isValidUser(incoming()))
+      );
+    }
+
+    // Article Rules
+    match /articles/{articleId} {
+      function isValidArticle(data) {
+        return data.title is string && data.title.size() <= 500
+          && data.content is string && data.content.size() <= 50000
+          && data.category is string && data.category.size() <= 200
+          && data.sentiment in ['Positivo', 'Negativo']
+          && data.status in ['pending', 'classified', 'rejected']
+          && (data.createdAt is number || data.createdAt is timestamp)
+          && data.authorId == request.auth.uid;
+      }
+
+      allow list: if isSignedIn(); // Allow all authenticated users to see the hub data
+      allow get: if isSignedIn();
+      allow create: if isSignedIn() && isEmailVerified() && isValidArticle(incoming());
+      allow update: if isSignedIn() && (isAdmin() || (isOwner(existing().authorId) && isValidArticle(incoming())));
+      allow delete: if isSignedIn() && (isAdmin() || (isOwner(existing().authorId)));
+    }
+  }
+}
