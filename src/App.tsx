@@ -14,6 +14,9 @@ import {
   AlertCircle,
   TrendingUp,
   TrendingDown,
+  BookOpen,
+  ChevronDown,
+  ChevronUp,
   PieChart as PieChartIcon
 } from 'lucide-react';
 import { 
@@ -227,8 +230,8 @@ const Dashboard = ({ articles }: { articles: Article[] }) => {
         {/* Sentiment & Distribution Group */}
         <div className="space-y-6">
           <Card title="Distribuição de Sentimento">
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
+            <div className="h-64 w-full relative min-h-[256px]">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                 <PieChart>
                   <Pie data={sentimentData} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
                     {sentimentData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.fill} />)}
@@ -250,8 +253,8 @@ const Dashboard = ({ articles }: { articles: Article[] }) => {
           </Card>
 
           <Card title="Atividade Volumétrica (Simulado 24h)">
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
+            <div className="h-64 w-full relative min-h-[256px]">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                 <BarChart data={hourlyData}>
                   <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fontSize: 10 }} />
                   <Tooltip cursor={{ fill: '#f4f4f5' }} contentStyle={{ borderRadius: '8px' }} />
@@ -264,8 +267,8 @@ const Dashboard = ({ articles }: { articles: Article[] }) => {
 
         {/* Category Breakdown */}
         <Card title="Classificação por Categoria Principal">
-          <div className="h-[544px]">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-[544px] w-full relative min-h-[544px]">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <BarChart data={categoryData} layout="vertical" margin={{ left: 40, right: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
                 <XAxis type="number" hide />
@@ -305,6 +308,8 @@ const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [autoClear, setAutoClear] = useState(false);
 
+  const [showManual, setShowManual] = useState(false);
+
   const fetchNewsFromUrl = async () => {
     if (!inputUrl) return;
     setIsFetchingUrl(true);
@@ -341,7 +346,7 @@ const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
     }, 300);
 
     try {
-      const result = await classifyArticle(inputTitle, inputContent);
+      const result = await classifyArticle(inputTitle, inputContent, inputUrl);
       clearInterval(interval);
       setProgress(100);
       
@@ -377,6 +382,7 @@ const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
   };
 
   const clearInputs = () => {
+    setInputUrl('');
     setInputTitle('');
     setInputContent('');
     setLastResult(null);
@@ -384,7 +390,102 @@ const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="flex flex-col gap-6">
+      {/* Manual de Classificação */}
+      <div className="bg-white border border-zinc-200 rounded-3xl overflow-hidden shadow-sm">
+        <button 
+          onClick={() => setShowManual(!showManual)}
+          className="w-full px-6 py-4 flex items-center justify-between hover:bg-zinc-50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="bg-zinc-900 p-2 rounded-lg text-white">
+              <BookOpen size={18} />
+            </div>
+            <div className="text-left">
+              <h3 className="font-bold text-zinc-900 leading-none">Manual de Classificação - Conta Vale</h3>
+              <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mt-1">Guia de Categorização e Regras de Ouro</p>
+            </div>
+          </div>
+          {showManual ? <ChevronUp size={20} className="text-zinc-400" /> : <ChevronDown size={20} className="text-zinc-400" />}
+        </button>
+
+        <AnimatePresence>
+          {showManual && (
+            <motion.div 
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="px-6 pb-6 overflow-hidden border-t border-zinc-100"
+            >
+              <div className="pt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                 <div className="space-y-3">
+                   <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                     <div className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]" /> 1. SEGURANÇA
+                   </h4>
+                   <ul className="space-y-2">
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Outros:</strong> Acidentes sem morte, roubos, incêndios.</li>
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Fatalidades:</strong> APENAS mortes em serviço.</li>
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Geotécnicas:</strong> Barragens, alarmes, simulados.</li>
+                   </ul>
+                 </div>
+                 <div className="space-y-3">
+                   <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                     <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.4)]" /> 2. PESSOAS
+                   </h4>
+                   <ul className="space-y-2">
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Outros:</strong> Sindicatos, acordos, Aposvale.</li>
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Recrutamento:</strong> Vagas, Estágio, Aprendiz.</li>
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Diversidade:</strong> Mulheres, Racial, LGBTQIA+.</li>
+                   </ul>
+                 </div>
+                 <div className="space-y-3">
+                   <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                     <div className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]" /> 3. REPARAÇÃO
+                   </h4>
+                   <ul className="space-y-2">
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Econômico:</strong> Queda de arrecadação, turismo, Inhotim.</li>
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Social:</strong> Impacto na população, buscas, Memorial.</li>
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Legal:</strong> Justiça, indenizações, multas, CPIs.</li>
+                   </ul>
+                 </div>
+                 <div className="space-y-3">
+                   <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                     <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" /> 4. SUSTENTABILIDADE
+                   </h4>
+                   <ul className="space-y-2">
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Patrocínio:</strong> Eventos culturais, festivais.</li>
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Pó Preto:</strong> Poluição em Tubarão (ES).</li>
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Fundação Vale:</strong> QUALQUER ação pela Fundação Vale.</li>
+                   </ul>
+                 </div>
+                 <div className="space-y-3">
+                   <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                     <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]" /> 5. NEGÓCIOS
+                   </h4>
+                   <ul className="space-y-2">
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Minério/Metais:</strong> S11D, Cobre, Níquel.</li>
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Logística:</strong> Ferrovias (EFC, EFVM) e Portos.</li>
+                     <li className="text-[11px] text-zinc-600 leading-relaxed"><strong className="text-zinc-900">Governança:</strong> Conselho, ESG, troca de CEO.</li>
+                   </ul>
+                 </div>
+              </div>
+              <div className="mt-8 p-4 bg-zinc-900 rounded-2xl flex items-start gap-4">
+                 <div className="bg-zinc-800 p-2 rounded-lg text-emerald-400">
+                   <BrainCircuit size={20} />
+                 </div>
+                 <div>
+                   <h4 className="text-white font-bold text-sm">Passo a Passo de Rotina (O Dia)</h4>
+                   <p className="text-zinc-400 text-xs mt-1 leading-relaxed">
+                     O sistema descarta automaticamente URLs do jornal "O Dia" que não sejam de <span className="text-emerald-400 font-bold">Mangaratiba</span> ou <span className="text-emerald-400 font-bold">Itaguaí</span>.
+                   </p>
+                 </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <Card title="Nova Análise de Matéria">
         <div className="space-y-4">
           <div>
@@ -549,6 +650,7 @@ const TrainingCenter = ({ user }: { user: FirebaseUser }) => {
           )}
         </AnimatePresence>
       </Card>
+    </div>
     </div>
   );
 };

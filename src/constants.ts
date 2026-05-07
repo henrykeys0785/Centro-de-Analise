@@ -1,156 +1,93 @@
 export const CATEGORIES = [
-  "Assuntos de interesse - Rel. Gov.",
-  "CPIs Vale - Pará",
-  "Envio automático - CULTURA",
-  "Campanha publicitária",
-  "Projetos patrocinados",
-  "Vale",
-  "Segurança – Outros",
-  "Segurança – Fatalidades",
+  "Segurança - Outros",
+  "Segurança - Fatalidades",
   "Segurança - Estruturas Geotécnicas",
-  "Pessoas – Outros",
-  "Pessoas - Transformação cultural",
-  "Pessoas – Recrutamento",
-  "Pessoas – Diversidade",
-  "Reparação Brumadinho – Outros",
-  "Reparação Brumadinho - Desenvolvimento Econômico",
-  "Reparação Brumadinho – Social",
-  "Reparação Brumadinho - Meio Ambiente",
-  "Reparação Brumadinho - Municípios Evacuados",
-  "Reparação Brumadinho - Acordo Reparação Integral",
-  "Reparação Brumadinho - Relações Legais",
-  "Sustentabilidade – Outros",
-  "Sustentabilidade – Patrocínio",
-  "Sustentabilidade – Espaços Culturais",
+  "Pessoas - Outros",
+  "Pessoas - Transformação Cultural",
+  "Pessoas - Recrutamento",
+  "Pessoas - Diversidade",
+  "Reparação - Outros",
+  "Reparação - Desenvolvimento Econômico",
+  "Reparação - Social",
+  "Reparação - Meio Ambiente",
+  "Reparação - Municípios Evacuados",
+  "Reparação - Acordo Reparação Integral",
+  "Reparação - Relações Legais",
+  "Sustentabilidade - Outros",
+  "Sustentabilidade - Patrocínio",
+  "Sustentabilidade - Espaços Culturais",
   "Sustentabilidade - Meio Ambiente",
-  "Pó Preto",
-  "TCA Camburi",
-  "Sustentabilidade - Social",
-  "Fundação Vale",
-  "Sustentabilidade - Balanço Vale Mais",
-  "Sustentabilidade - Fundo Vale",
-  "Sustentabilidade – Governança",
-  "Sustentabilidade – Descarbonização",
-  "Sustentabilidade - Mineração Circular",
-  "Sustentabilidade - Relação com Comunidades",
+  "Sustentabilidade - Pó Preto",
+  "Sustentabilidade - Relação com as Comunidades",
   "Sustentabilidade - Comunidades Tradicionais",
-  "Negócios – Outros",
+  "Sustentabilidade - Fundação Vale",
+  "Negócios - Outros",
   "Negócios - Relações Institucionais",
   "Negócios - Metais de Transição Energética",
-  "Negócios - Mínério de Ferro",
-  "Negócios – Fornecedores",
-  "Negócios – Ferrovias",
-  "Negócios – Portos",
-  "Negócios - Controladas e coligadas",
-  "Negócios – Finanças",
-  "Negócios - Inovação e Tecnologia",
+  "Negócios - Minério de Ferro",
+  "Negócios - Fornecedores",
+  "Negócios - Ferrovias",
+  "Negócios - Portos",
+  "Negócios - Controladas e Coligadas",
+  "Negócios - Finanças",
   "Negócios - Bolsa de Valores",
-  "Reparação Mariana – Outros",
-  "Reparação Mariana – Social",
-  "Reparação Mariana - Relações legais",
-  "Vale - Internacional",
-  "Indonésia",
-  "Omã",
-  "Malásia",
-  "Argentina",
-  "Austrália",
-  "Canadá",
-  "China",
-  "Nova Caledônia",
-  "Moçambique",
-  "Corporativo - Vale",
-  "Recursos Humanos - Vale",
-  "Mineração - Vale",
-  "Logística - Vale",
-  "Desenvolvimento Social - Vale",
-  "Saúde e Segurança - Vale",
-  "Meio Ambiente - Vale",
-  "Finanças - Vale",
-  "Sustentabilidade - Vale",
-  "Inovação e Tecnologia - Vale",
-  "Energia - Vale",
-  "Reassentamento - Vale",
-  "Meio Ambiente",
-  "Concessionárias",
-  "Sociedade",
-  "Economia",
-  "Política",
-  "Anúncios Vale (impresso)",
-  "Samarco (sem Vale)",
-  "Concorrentes",
-  "BHP",
-  "Rio Tinto",
-  "Fortescue Metals Group",
-  "Anglo American",
-  "Setor",
-  "Setor Controladas e Coligadas",
-  "Setor Patrocínios Culturais",
-  "Setor Finanças",
-  "Setor Mineração",
-  "Setor Siderurgia",
-  "Setor Energia",
-  "Setor Logística",
-  "Setor Fertilizantes",
-  "Setor Inovação e Tecnologia",
-  "Setor Sustentabilidade",
-  "CPIs",
-  "Senado Federal",
-  "Câmara dos Deputados",
-  "Assembleia Legislativa de MG",
-  "Câmara de Vereadores de BH",
-  "Assembleia Legislativa do ES",
-  "Câmara de Vereadores de Parauapebas",
-  "Outros - Colunistas",
-  "Outros - 1ª página",
-  "Renovação das concessões ferroviárias",
-  "Arquivo",
-  "Reparação - Obras e Infraestrutura",
-  "Sustentabilidade - Samarco / Renova",
-  "Negócios - Carvão",
-  "Barragens",
-  "Abrace Brumadinho",
-  "Negócios - Ativos de energia",
-  "Projetos de Capital",
-  "Energia/Siderurgia/Participações",
-  "Samarco (com Vale)",
-  "Recursos Humanos",
-  "Relação com Governos/Regulação",
-  "Institucional",
-  "Vale Corporativo",
-  "Vale Mineração",
-  "Vale Siderurgia",
-  "Vale Energia",
-  "Vale Logística",
-  "Vale Fertilizantes",
-  "Vale Inovação & Tecnologia",
-  "Vale Sustentabilidade"
+  "Negócios - Governança",
+  "Negócios - Descarbonização",
+  "Negócios - Inovação e Tecnologia",
+  "Negócios - Mineração Circular"
 ];
 
 export const CLASSIFICATION_MANUAL = `
-Manual de Classificação Vale AI Insight Hub:
+📘 Manual de Classificação de Notícias - Conta Vale
 
-1. Segurança – Outros: Saúde, casos/problemas segurança Vale (não trabalhadores), projetos segurança.
-2. Segurança – Fatalidades: Fatalidades ou acidentes com funcionários.
-3. Segurança - Estruturas Geotécnicas: Segurança barragens (não Brumadinho focado), fiscalização, simulados.
-4. Pessoas: Recrutamento, Diversidade (Mulheres na mineração), Transformação Cultural.
-5. Reparação Brumadinho: Desenvolvimento Econômico (turismo), Social (vítimas), Meio Ambiente (rio Paraopeba), Municípios Evacuados (Barão de Cocais, etc), Acordo Reparação, Relações Legais (multas, CFEM).
-6. Sustentabilidade: Patrocínio (Cultura Vale), Espaços Culturais (Memorial), Meio Ambiente (Pó Preto Vitória), Social (Fundação Vale), Governança (ESG), Descarbonização (Sol do Cerrado), Mineração Circular, Comunidades.
-7. Negócios: Institucional (Ibram, impostos), Metais de Transição (Níquel/Cobre), Minério de Ferro (preço, S11D), Fornecedores, Ferrovias (VLI citando Carajás/Vitória-Minas), Portos, Controladas, Finanças (Ebitda), Inovação (ITV).
-8. Reparação Mariana: Social, Relações Legais (Acordo judicial).
+1. Módulo: SEGURANÇA
+- Segurança - Outros: Acidentes sem morte, furtos/roubos (ex: cabos Carajás), incêndios com atuação da brigada.
+- Segurança - Fatalidades: Apenas mortes em serviço (diretos ou terceiros). Exclui mortes fora do trabalho.
+- Segurança - Estruturas Geotécnicas: Barragens, níveis de emergência, descaracterização, simulados. Inclui barragens de terceiros se o risco for genérico do setor.
 
-Regras Específicas:
-- Ibram -> Negócios – Relações Institucionais.
-- Reuters Internacional -> Categoria específica se houver, ou Negócios.
-- Julgamento Brumadinho -> Reparação Brumadinho – Relações Legais.
-- VLI citando ferrovia Vale -> Negócios – Ferrovias.
-- Maranhão/Produtores rurais -> Sustentabilidade - Relação com Comunidades.
-- Campanha publicitária -> Negócios – Outros.
-- Lei incentivo esporte -> Sustentabilidade - Social + Fundação Vale.
-- Manutenções preventivas -> Sustentabilidade - Relação com Comunidades (Positivo).
-- Itabira (não relacionado a Brumadinho) -> Categoria específica da cidade/negócio.
-- Memorial Brumadinho -> Reparação Brumadinho – Social (Positivo).
-- Balanço de produção -> Negócios - Mínério de Ferro (não Finanças).
+2. Módulo: PESSOAS
+- Pessoas - Outros: Foco em funcionários/ex-funcionários, sindicatos (Metabase), acordos trabalhistas, PLR, Aposvale, corridas/eventos.
+- Pessoas - Transformação Cultural: Mudanças estruturais na forma de trabalhar (ex: Home Office).
+- Pessoas - Recrutamento: Processos seletivos, vagas, estágio, aprendiz, formação.
+- Pessoas - Diversidade: Mulheres ("Mineração por Elas"), LGBTQIA+, questões raciais, combate à violência doméstica, canais de assédio.
 
-Sentimentos: "Positivo" ou "Negativo" (NÃO EXISTE NEUTRO).
-Se a matéria não se encaixar em NENHUMA categoria, deve ser marcada como 'rejected'.
+3. Módulo: REPARAÇÃO BRUMADINHO
+- Reparação - Outros: Citações periféricas à tragédia (ex: bombeiro que virou candidato).
+- Reparação - Desenvolvimento Econômico: Queda de arrecadação, impacto no turismo, Inhotim.
+- Reparação - Social: Impacto na população (depressão/ansiedade), Memorial Brumadinho, buscas.
+- Reparação - Meio Ambiente: Poluição do Rio Paraopeba, resgate/adoção de animais.
+- Reparação - Municípios Evacuados: Comunidades esvaziadas por risco (Antônio Pereira, Macacos).
+- Reparação - Acordo Reparação Integral: Menções ao dinheiro do acordo, obras financiadas (Rodoanel). Sentimento: Geralmente positivo.
+- Reparação - Relações Legais: Justiça, indenizações, julgamentos, CPIs, réus, multas Ibama.
+
+4. Módulo: SUSTENTABILIDADE
+- Sustentabilidade - Outros: Ações de doação genéricas (EPIs na pandemia).
+- Sustentabilidade - Patrocínio: Patrocínio a eventos culturais (Festivais, editais).
+- Sustentabilidade - Espaços Culturais: CCVM, Museu Vale, Memorial Vale, Casa da Cultura, Parque Botânico.
+- Sustentabilidade - Meio Ambiente: Licenças gerais, desmatamento, manutenção de parques (não Brumadinho).
+- Sustentabilidade - Pó Preto: Poluição do ar por minério no Espírito Santo (Tubarão).
+- Sustentabilidade - Relação com as Comunidades: Manutenção de água, ajuda a agricultores.
+- Sustentabilidade - Comunidades Tradicionais: Indígenas (Xikrin) e Quilombolas.
+- Sustentabilidade - Fundação Vale: Qualquer ação da Fundação Vale. Marcar também a categoria da ação.
+
+5. Módulo: NEGÓCIOS
+- Negócios - Outros: Categoria coringa. Privatizações anos 90, crimes sem relação com segurança.
+- Negócios - Relações Institucionais: Governos, impostos, royalties, CFEM.
+- Negócios - Metais de Transição Energética: Cobre e Níquel.
+- Negócios - Minério de Ferro: Recordes, vendas, S11D.
+- Negócios - Fornecedores: Terceirizadas, programas de capacitação.
+- Negócios - Ferrovias: EFC (Carajás), EFVM (Vitória a Minas).
+- Negócios - Portos: Tubarão (ES), Ponta da Madeira (MA).
+- Negócios - Controladas e Coligadas: VLI, Samarco (negócios), MRN, Aliança Energia.
+- Negócios - Finanças: Lucro, prejuízo, dividendos, investimentos bilionários.
+- Negócios - Bolsa de Valores: Exclusivamente cotação (Ibovespa).
+- Negócios - Governança: ESG, Conselho, AGO/AGE, trocas de CEO.
+- Negócios - Descarbonização: Metas carbono, diesel sustentável, caminhões elétricos.
+- Negócios - Inovação e Tecnologia: ITV, startups, digitalização, autônomos, robôs.
+- Negócios - Mineração Circular: Rejeito em outros produtos (areia, asfalto).
+
+📌 Passo a Passo de Rotina (Dica de Alertas)
+- Jornal "O Dia" (RJ):
+  - /mangaratiba ou /itaguai -> APROVAR (Enviar Alerta).
+  - Outras cidades (ex: /teresopolis) -> DESCARTAR (Não enviar).
 `;

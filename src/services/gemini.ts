@@ -15,22 +15,38 @@ function getAiClient() {
   return aiClient;
 }
 
-export async function classifyArticle(title: string, content: string) {
+export async function classifyArticle(title: string, content: string, url?: string) {
+  // --- Passo a Passo de Rotina (O Dia) ---
+  if (url && (url.includes("odia.ig.com.br") || url.includes("odia.com.br"))) {
+    const isApprovedRegion = url.includes("/mangaratiba") || url.includes("/itaguai");
+    const isDiscardedRegion = url.includes("/teresopolis") || !isApprovedRegion;
+    
+    if (isDiscardedRegion) {
+      return {
+        category: "Negócios - Outros",
+        sentiment: "Negativo" as Sentiment,
+        explanation: "Descartado automaticamente conforme rotina do jornal 'O Dia' (Região não prioritária).",
+        isRejected: true
+      };
+    }
+  }
+
   const ai = getAiClient();
   const prompt = `
     Classifique a seguinte matéria sobre a Vale de acordo com o manual fornecido.
     
-    TÍTULO (PRIORIDADE): ${title}
+    TÍTULO: ${title}
     CONTEÚDO: ${content}
+    URL: ${url || "Não informada"}
 
     MANUAL E REGRAS:
     ${CLASSIFICATION_MANUAL}
 
     REGRAS DE OURO:
-    1. O FOCO é o TÍTULO. Se houver múltiplos assuntos, o foco principal do título dita a categoria.
-    2. SENTIMENTO: Apenas "Positivo" ou "Negativo". NÃO use "Neutro".
-    3. REJEIÇÃO: Marque "isRejected: true" se a matéria não tiver NADA a ver com a Vale ou as categorias do manual.
-    4. REGRAS DE PERSONAGENS: Matérias sobre o Dino e Mariana entram em "Reparação Mariana – Relações legais" com sentimento "Negativo".
+    1. CATEGORIA: Escolha EXATAMENTE uma das categorias da lista abaixo.
+    2. SENTIMENTO: Apenas "Positivo" ou "Negativo".
+    3. REJEIÇÃO: Marque "isRejected: true" se a matéria não for sobre a Vale ou não se encaixar em nenhuma regra do manual.
+    4. FUNDAÇÃO VALE: Se envolver a Fundação Vale, classifique como "Sustentabilidade - Fundação Vale".
 
     CATEGORIAS DISPONÍVEIS:
     ${CATEGORIES.join(", ")}
@@ -39,7 +55,7 @@ export async function classifyArticle(title: string, content: string) {
     {
       "category": "String da Categoria Exata",
       "sentiment": "Positivo" | "Negativo",
-      "explanation": "Breve explicação da classificação baseada no manual",
+      "explanation": "Explicação baseada no manual",
       "isRejected": boolean
     }
   `;
