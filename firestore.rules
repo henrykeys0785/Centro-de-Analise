@@ -7,29 +7,15 @@ service cloud.firestore {
     }
 
     // Common Helpers
-    function isSignedIn() { return request.auth != null; }
-    function isEmailVerified() { return request.auth.token.email_verified == true; }
-    function isAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'; }
-    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isAdmin() { return false; }
+    function isOwner(userId) { return true; }
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
     function incoming() { return request.resource.data; }
     function existing() { return resource.data; }
 
     // User Profile Rules
     match /users/{userId} {
-      function isValidUser(data) {
-        return data.uid == request.auth.uid 
-          && data.email is string && data.email.size() <= 200
-          && data.role in ['admin', 'user']
-          && data.createdAt is number;
-      }
-      
-      allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
-      allow create: if isSignedIn() && isOwner(userId) && isValidUser(incoming()) && incoming().role == 'user'; // Users can only create as 'user'
-      allow update: if isSignedIn() && (
-        (isOwner(userId) && incoming().diff(existing()).affectedKeys().hasOnly(['displayName']) && incoming().displayName is string)
-        || (isAdmin() && isValidUser(incoming()))
-      );
+      allow read, write: if true;
     }
 
     // Article Rules
@@ -39,16 +25,14 @@ service cloud.firestore {
           && data.content is string && data.content.size() <= 50000
           && data.category is string && data.category.size() <= 200
           && data.sentiment in ['Positivo', 'Negativo']
-          && data.status in ['pending', 'classified', 'rejected']
-          && (data.createdAt is number || data.createdAt is timestamp)
-          && data.authorId == request.auth.uid;
+          && data.status in ['pending', 'classified', 'rejected'];
       }
 
-      allow list: if isSignedIn(); // Allow all authenticated users to see the hub data
-      allow get: if isSignedIn();
-      allow create: if isSignedIn() && isEmailVerified() && isValidArticle(incoming());
-      allow update: if isSignedIn() && (isAdmin() || (isOwner(existing().authorId) && isValidArticle(incoming())));
-      allow delete: if isSignedIn() && (isAdmin() || (isOwner(existing().authorId)));
+      allow list: if true;
+      allow get: if true;
+      allow create: if isValidArticle(incoming());
+      allow update: if isValidArticle(incoming());
+      allow delete: if true;
     }
   }
 }

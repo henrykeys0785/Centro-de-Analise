@@ -683,52 +683,14 @@ export default function App() {
   const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
-    let fired = false;
-    const timeout = setTimeout(() => {
-      if (!fired) {
-        setLoadError("O sistema está demorando para responder. Tente recarregar a página (F5) ou verifique sua conexão.");
-      }
-    }, 15000);
-
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      fired = true;
-      clearTimeout(timeout);
-      setUser(u);
-      setLoading(false);
-
-      if (u) {
-        // Background sync user profile - don't block UI loading
-        const syncUser = async () => {
-          const userRef = doc(db, 'users', u.uid);
-          try {
-            const userSnap = await getDoc(userRef);
-            if (!userSnap.exists()) {
-              await setDoc(userRef, {
-                uid: u.uid,
-                email: u.email,
-                displayName: u.displayName || 'Usuário Vale',
-                role: 'user',
-                createdAt: Date.now()
-              });
-            }
-          } catch (err: any) {
-             console.error("Error background syncing profile:", err);
-          }
-        };
-        syncUser();
-      }
-    }, (error) => {
-      fired = true;
-      clearTimeout(timeout);
-      console.error("Auth error:", error);
-      setLoadError("Erro ao inicializar autenticação: " + error.message);
-      setLoading(false);
-    });
-
-    return () => {
-      unsubscribe();
-      clearTimeout(timeout);
-    };
+    // Automatically set a guest user instead of requiring Google Login
+    setUser({
+      uid: 'guest-user',
+      displayName: 'Gestor Vale',
+      email: 'gestor@valehub.ai',
+      photoURL: null
+    } as any);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -765,47 +727,10 @@ export default function App() {
     }
   };
 
-  if (loadError) {
-    return (
-      <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center p-6 text-center">
-        <AlertCircle size={48} className="text-rose-500 mb-4" />
-        <h2 className="text-xl font-bold text-zinc-900 mb-2">Ops! Ocorreu um problema</h2>
-        <p className="text-zinc-500 max-w-md mb-6">{loadError}</p>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Button onClick={() => window.location.reload()}>Recarregar Sistema</Button>
-          <Button variant="secondary" onClick={() => {
-            signOut(auth).then(() => window.location.reload());
-          }}>Limpar Sessão</Button>
-        </div>
-        <p className="text-[10px] text-zinc-400 mt-8 uppercase tracking-widest leading-relaxed">
-          Dica: Se o erro persistir, verifique se seu navegador está<br/>bloqueando pop-ups ou se você está em uma rede restrita.
-        </p>
-      </div>
-    );
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-zinc-200 border-t-zinc-900 rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center p-6">
-        <div className="w-full max-w-md bg-white p-10 rounded-3xl shadow-xl border border-zinc-100 text-center">
-          <div className="bg-zinc-900 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-zinc-200">
-            <BrainCircuit size={32} className="text-white" />
-          </div>
-          <h1 className="text-3xl font-extrabold text-zinc-900 mb-3 tracking-tight">Vale AI Insight Hub</h1>
-          <p className="text-zinc-500 mb-10 leading-relaxed">Acesse o sistema inteligente de classificação e monitoramento de notícias Vale.</p>
-          <Button className="w-full h-14 text-lg" onClick={handleLogin}>
-            <img src="https://www.google.com/favicon.ico" className="w-5 h-5 mr-2" alt="Google" />
-            Entrar com Google
-          </Button>
-        </div>
       </div>
     );
   }
